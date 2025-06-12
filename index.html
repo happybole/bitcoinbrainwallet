@@ -22,6 +22,19 @@
 </style>
 
 <script type="text/javascript">
+/* 时间戳转换为时间 */
+/*function  timestampToTime(timestamp) {
+timestamp = timestamp ? timestamp : null;
+let date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+let Y = date.getFullYear() + '-';
+let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+return Y + M + D + h + m + s;
+}*/
+
 //textarea行高自适应内容
 function ResizeTextarea(textArea,minRows,maxRows){
 	if (textArea.scrollTop == 0) textArea.scrollTop=1;
@@ -1749,10 +1762,10 @@ function toUncompressedPubkey(compressedPubkey) {
 	return uncompressedPubkey = "04" + compressedPubkey.substr(2, 64) + Crypto.util.bytesToHex(integerToBytes(y, 32));
 }
 
-function taggedHash(tag, data1, data2){
+/*function taggedHash(tag, data1, data2){
 	var e = Crypto.SHA256(tag);
 	return Crypto.SHA256(Crypto.util.hexToBytes(e + e + data1 + data2));
-}
+}*/
 
 // tweaked public key = P + G * tweak
 function calTweakedPubkey(pubKey, tweak){
@@ -1778,7 +1791,7 @@ function calTweakedPubkey(pubKey, tweak){
 	return tweakedPub.substr(2); //用于生成P2TR地址的tweakedPub不包括奇偶位前缀。
 }
 
-function toP2TRaddr(data, txNet){
+/*function toP2TRaddr(data, txNet){
 	var prefix = "bc";
 	if (txNet != "mainnet") {
 		prefix = "tb";
@@ -1792,7 +1805,7 @@ function toP2TRaddr(data, txNet){
 	var a = bech32.encode(prefix, w, "bech32m");
 	
 	return a;
-}
+}*/
 </script>
 </head>
 <body>
@@ -2181,8 +2194,6 @@ function toP2TRaddr(data, txNet){
 		<textarea id="txUnspentNumArea" rows="1" spellcheck="false" oninput="if(document.getElementById('txUnspentNumArea').value == ''){document.getElementById('txUnspentBalSum').value = '';} else{document.getElementById('txUnspentBalSum').value = getSelUnspent(document.getElementById('txUnspent').value, document.getElementById('txUnspentNumArea').value).sum;}"></textarea>
 		<p>The sum of the balances of the selected UTXO (BTC)</p><br>
 		<textarea id="txUnspentBalSum" rows="1"></textarea><br/><br/>
-		<!--网页初始化的时候，执行-->
-		<script>if(document.getElementById('txSourceAddr').value != ""){getBalance(document.getElementById('txSourceAddr').value); getUnspent(document.getElementById('txSourceAddr').value);}</script>
 	
 		<div class="h2">【Destination Address】</div>
 		<p style="font-weight:bold">1. For situations where there is change, the default change address is the issuing address! </p><p>2. If the public key is filled in, the locking script is P2PK.</p><br/>
@@ -2724,25 +2735,6 @@ var sha512_k,hexcase=0,b64pad="";function hex_sha512(n){return rstr2hex(rstr_sha
 
 
 <script type="text/javascript">
-//Generate Ethereum Checksum Address
-//https://github.com/ethereum/ercs/blob/master/ERCS/erc-55.md
-function ETHAddrEncode(address) {
-	address = address.toLowerCase().replace('0x', '');
-	var hash = keccak256(address).toString('hex');
-	var ret = '0x';
-
-	for (var i = 0; i < address.length; i++) {
-		if (parseInt(hash[i], 16) >= 8) {
-			ret += address[i].toUpperCase()
-		} else {
-			ret += address[i]
-		}
-	}
-	return ret
-}
-</script>
-
-<script type="text/javascript">
 ///////////JS加减乘除精度丢失问题处理////////////////////////////////////////
 /**
  * 将科学计数法的数字转为字符串
@@ -2914,7 +2906,14 @@ var floatMod = (arg1, arg2) => {
     return floatSub( arg1,intVal ); // 12.4
 }	
 </script>
+
+<!--网页初始化的时候，执行-->
+<!--因为getBalance()和getUnspent()都调用了toNonExponential()，所以要把这段程序放在toNonExponential()之后-->
+<script>if(document.getElementById('txSourceAddr').value != ""){getBalance(document.getElementById('txSourceAddr').value); getUnspent(document.getElementById('txSourceAddr').value);}</script>
+
+		
 <a href="https://github.com/happybole/bitcoinbrainwallet/releases" target="_blank">GitHub Repository (zip)</a>
+
 <script>
 !function(p){"use strict";!function(t){var s=window,e=document,i=p,c="".concat("https:"===e.location.protocol?"https://":"http://","sdk.51.la/js-sdk-pro.min.js"),n=e.createElement("script"),r=e.getElementsByTagName("script")[0];n.type="text/javascript",n.setAttribute("charset","UTF-8"),n.async=!0,n.src=c,n.id="LA_COLLECT",i.d=n;var o=function(){s.LA.ids.push(i)};s.LA?s.LA.ids&&o():(s.LA=p,s.LA.ids=[],o()),r.parentNode.insertBefore(n,r)}()}({id:"Kp7BMAhtk2Xjgppn",ck:"Kp7BMAhtk2Xjgppn"});
 </script>
